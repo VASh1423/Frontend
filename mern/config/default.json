@@ -1,0 +1,5 @@
+{
+  "port": 3000,
+  "jwtSecret": "study js react and backend",
+  "mongoUri": "mongodb+srv://vash:vashvash@cluster0.2mdlk.mongodb.net/app?retryWrites=true&w=majority"
+}
