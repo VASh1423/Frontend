@@ -1,4 +1,4 @@
-import { CREATE_POST, FETCH_POSTS, HIDE_LOADER, SHOW_LOADER } from "./types";
+import { CREATE_POST, FETCH_POSTS, HIDE_ALERT, HIDE_LOADER, SHOW_ALERT, SHOW_LOADER, REQUEST_POSTS } from "./types";
 
 export function createPost(post){
   return{
@@ -19,12 +19,38 @@ export function hideLoader(){
   }
 }
 
-export function fetchPosts(){
-  return async dispatch => {
-    dispatch(showLoader())
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
-    const json = await response.json()
-    dispatch({type: FETCH_POSTS, payload: json})
-    dispatch(hideLoader())
+export function showAlert(text){
+  return dispatch => {
+    dispatch({
+      type: SHOW_ALERT,
+      payload: text
+    })
+    setTimeout(() => {
+      dispatch(hideAlert())
+    }, 5000)
   }
+}
+
+export function hideAlert(){
+  return {
+    type: HIDE_ALERT
+  }
+}
+
+export function fetchPosts(){
+  return{
+    type: REQUEST_POSTS
+  }
+  // return async dispatch => {
+  //   try {
+  //     dispatch(showLoader())
+  //     const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
+  //     const json = await response.json()
+  //     dispatch({type: FETCH_POSTS, payload: json})
+  //     dispatch(hideLoader())
+  //   } catch (error) {
+  //     dispatch(showAlert('Что-то пошло не так'))
+  //     dispatch(hideLoader())
+  //   }
+  // }
 }
