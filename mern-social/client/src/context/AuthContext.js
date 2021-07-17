@@ -3,10 +3,12 @@ import AuthReducer from './AuthReducer'
 
 const INITIAL_STATE = {
   user: {
-    _id: '60e1ade12fed1b4e70fba0c1',
-    username: "hey",
-    email: "hey@gmail.com",
-    password: "$2b$10$zwsfES55C5FU99X/I6yFfebcxngOckY3a29yGYCh3cPDZ0.Nf7bJC"
+    _id: '60e1b1e82fac7b53d0ad7eb0',
+    username: "john",
+    email: "john@gmail.com",
+    password: "$2b$10$ro/YWTTCrvUbOQmqbto8GuWq/yEtOorL0KzfyQSy117W.nlX7fN7q",
+    followers: [],
+    followings: [],
   },
   isFetching: false,
   error: false
