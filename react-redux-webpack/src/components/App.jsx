@@ -13,7 +13,7 @@ export default function App(){
       <div className="container">
         <Switch>
           <Route exact path='/' component={Main}/>
-          <Route path='/card' component={Card}/>
+          <Route path="/card/:username/:reponame" component={Card}/>
           <Redirect to='/'/>
         </Switch>
       </div>
