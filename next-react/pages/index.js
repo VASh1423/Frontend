@@ -1,22 +1,12 @@
 import Link from 'next/link'
+import Head from "next/head"
 import A from '../components/A'
+import MainContainer from '../components/MainContainer'
 
 export default function Index() {
   return (
-    <div>
-      <div className='navbar'>
-        <A href='/' text='Главная страница'/>
-        <A href='/users' text='Список пользователей'/>
-      </div>
+    <MainContainer>
       <h1>Главная страница</h1>
-      <style jsx>
-        {`
-          .navbar{
-            background: orange;
-            padding: 15px;
-          }
-        `}
-      </style>
-    </div>
+    </MainContainer>
   )
 }
