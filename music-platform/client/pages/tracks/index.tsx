@@ -1,20 +1,42 @@
-import { Button, Card, Grid } from '@mui/material'
+import { Button, Card, Grid, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import TrackList from '../../components/TrackList'
+import { useTypedSelector } from '../../hooks/useTypedSelector'
 import MainLayout from '../../layouts/MainLayout'
+import { NextThunkDispatch, wrapper } from '../../store'
+import { fetchTracks, searchTracks } from '../../store/action-creators/track'
 import { ITrack } from '../../types/track'
 
 const Index = () => {
   const router = useRouter()
-  const tracks: ITrack[] = [
-    {_id: '1', name: 'Трек 1', artist: 'Исполнитель 1', text: 'Текс', listens: 5, audio: 'http://localhost:5000/audio/6329e693-cff2-46a5-a7d5-85eea812f91e.m4a', comments: [{_id: '1', username: 'Имя', text: 'Комментарий'}], picture: 'http://localhost:5000/image/bfa83100-4189-4f3f-b575-a30ee44fd4d6.jpeg'},
-    {_id: '2', name: 'Трек 2', artist: 'Исполнитель 1', text: 'Текс', listens: 2, audio: 'Аудио', comments: [{_id: '2', username: 'Имя 2', text: 'Комментарий 2'}], picture: 'картинка'},
-  ]
+  const {tracks, error} = useTypedSelector(state => state.track)
+  const [query, setQuery] = useState<string>('')
+  const dispatch = useDispatch() as NextThunkDispatch
+  const [timer, setTimer] = useState(null)
+
+  const search = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value)
+    if(timer){
+      clearTimeout(timer)
+    }
+    setTimer(
+      setTimeout( async () => {
+        await dispatch(await searchTracks(e.target.value))
+      }, 500 )
+    )
+  }
+
+  if(error){
+    return <MainLayout>
+      <h1>{error}</h1>
+    </MainLayout>
+  }
 
   return (
-    <MainLayout>
+    <MainLayout title={'Список треков - музыкальная платформа'}>
       <Grid container justifyContent='center'>
         <Card style={{width: '900px'}}>
           <Box p={3}>
@@ -25,6 +47,11 @@ const Index = () => {
               </Button>
             </Grid>
           </Box>
+          <TextField
+            fullWidth
+            value={query}
+            onChange={search}
+          />
           <TrackList tracks={tracks}/>
         </Card>
       </Grid>
@@ -33,3 +60,8 @@ const Index = () => {
 }
 
 export default Index
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
+  const dispatch = store.dispatch as NextThunkDispatch
+  await dispatch(await fetchTracks())
+})
