@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TEST APP renders learn react link 1`] = `
+<input
+  placeholder="input value....."
+  type="text"
+/>
+`;
+
+exports[`TEST APP renders learn react link 2`] = `
+<input
+  placeholder="input value....."
+  type="text"
+/>
+`;
+
+exports[`TEST APP renders learn react link1 1`] = `
+<input
+  placeholder="input value....."
+  type="text"
+/>
+`;
+
+exports[`renders learn react link 1`] = `
+<input
+  placeholder="input value....."
+  type="text"
+/>
+`;
