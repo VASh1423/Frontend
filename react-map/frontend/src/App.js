@@ -6,12 +6,20 @@ import './app.css'
 import { useEffect, useState } from 'react';
 import axios from 'axios'
 import {format} from 'timeago.js'
+import Register from './components/Register';
+import Login from './components/Login';
 
 function App() {
-  const currentUser = "jane"
+  const myStorage = window.localStorage
+  const [currentUser, setCurrentUser] = useState(myStorage.getItem('user'))
   const [pins, setPins] = useState([])
   const [currentPlaceId, setCurrentPlaceId] = useState(null)
   const [newPlace, setNewPlace] = useState(null)
+  const [title, setTitle] = useState(null)
+  const [desc, setDesc] = useState(null)
+  const [rating, setRating] = useState(0)
+  const [showRegister, setShowRegister] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
     const getPins = async () => {
@@ -37,6 +45,31 @@ function App() {
       lat,
       long
     })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const newPin = {
+      username: currentUser,
+      title,
+      desc,
+      rating,
+      lat: newPlace.lat,
+      long: newPlace.long,
+    }
+
+    try {
+      const res = await axios.post('/pins', newPin)
+      setPins([...pins, res.data])
+      setNewPlace(null)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleLogout = () => {
+    myStorage.removeItem('user')
+    setCurrentUser(null)
   }
 
   return (
@@ -66,11 +99,7 @@ function App() {
                   <p className='desc'>{p.desc}.</p>
                   <label>Rating</label>
                   <div className='stars'>
-                    <StarIcon className='star'/>
-                    <StarIcon className='star'/>
-                    <StarIcon className='star'/>
-                    <StarIcon className='star'/>
-                    <StarIcon className='star'/>
+                    {Array(p.rating).fill(<StarIcon className='star'/>)}
                   </div>
                   <label>Information</label>
                   <span className='username'>Created by <b>{p.username}</b></span>
@@ -83,13 +112,13 @@ function App() {
         {newPlace && (
           <Popup longitude={newPlace.long} latitude={newPlace.lat} anchor="left">
             <div>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <label>Title</label>
-                <input placeholder='enter a title'/>
+                <input placeholder='enter a title' onChange={e => setTitle(e.target.value)}/>
                 <label>Review</label>
-                <textarea placeholder='about'/>
+                <textarea placeholder='about' onChange={e => setDesc(e.target.value)}/>
                 <label>Rating</label>
-                <select>
+                <select  onChange={e => setRating(e.target.value)}>
                   <option value='1'>1</option>
                   <option value='2'>2</option>
                   <option value='3'>3</option>
@@ -101,6 +130,18 @@ function App() {
             </div>
           </Popup>
         )}
+        <div className='buttons'>
+          {currentUser ? 
+          <button className='button logout' onClick={handleLogout}>Log out</button>
+          :
+          <>
+            <button className='button login' onClick={() => setShowLogin(true)}>Log in</button>
+            <button className='button register' onClick={() => setShowRegister(true)}>Register</button>
+          </>
+          }
+        </div>
+        {showRegister && <Register setShowRegister={setShowRegister}/>}
+        {showLogin && <Login setShowLogin={setShowLogin} myStorage={myStorage} setCurrentUser={setCurrentUser}/>}
       </Map>
     </div>
   );
